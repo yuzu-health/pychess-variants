@@ -29,6 +29,8 @@ services:
       context: .
       dockerfile: docker/server.Dockerfile
     restart: always
+    # -a makes anonymous visitors behave as logged-in test users (local dev only).
+    command: ["python", "server/server.py", "-a"]
     ports:
       - 8080:8080
     environment:

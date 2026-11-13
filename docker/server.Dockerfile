@@ -36,4 +36,4 @@ COPY variants.ini /app/
 
 EXPOSE 8080
 
-CMD ["python", "server/server.py", "-a"]
+CMD ["python", "server/server.py"]

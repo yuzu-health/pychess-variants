@@ -74,6 +74,7 @@ from settings import (
     FISHNET_KEYS,
     LOCALHOST,
     PROD,
+    SCHEDULED_TOURNAMENTS_ENABLED,
     URI,
 )
 from simul.simul import Simul
@@ -492,7 +493,7 @@ class PychessGlobalAppState:
                 self.tournaments_loaded.set()
 
             with startup.phase("create missing scheduled tournaments"):
-                if not is_test_run():
+                if SCHEDULED_TOURNAMENTS_ENABLED and not is_test_run():
                     already_scheduled = await get_scheduled_tournaments(self)
                     new_tournaments_data = new_scheduled_tournaments(already_scheduled)
                     await create_scheduled_tournaments(self, new_tournaments_data)

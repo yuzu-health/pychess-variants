@@ -63,6 +63,9 @@ REGISTRATION_SECRET = os.getenv("REGISTRATION_SECRET", "stayhealthy")
 # Third-party OAuth sign-in (Lichess/Lishogi/Google/Discord) bypasses the registration
 # secret, so it stays off unless explicitly enabled.
 OAUTH_LOGIN_ENABLED = os.getenv("OAUTH_LOGIN_ENABLED") == "true"
+# pychess.org's recurring daily/weekly/monthly/shield arenas. Off by default: YuzuChess
+# tournaments are created by hand.
+SCHEDULED_TOURNAMENTS_ENABLED = os.getenv("SCHEDULED_TOURNAMENTS_ENABLED") == "true"
 
 MONGO_HOST = os.getenv("MONGO_HOST", "mongodb://127.0.0.1:27017")
 # Credentials injected as separate secrets (e.g. ECS) are added to the host URI.

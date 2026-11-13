@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+from unittest.mock import patch
 
 from const import T_FINISHED
 from pychess_global_app_state_utils import get_app_state
@@ -32,6 +33,7 @@ class UnavailableTournamentTestCase(TournamentTestCase):
         self.assertIn("Page not found.", html)
         self.assertNotIn('id="placeholder"', html)
 
+    @patch("tournament.tournament_calendar.SCHEDULED_TOURNAMENTS_ENABLED", True)
     async def test_deletion_removes_only_the_deleted_tournaments_calendar_link(self):
         app_state = get_app_state(self.app)
         start = datetime.now(UTC)

@@ -9,6 +9,7 @@ from const import CATEGORY_VARIANT_SETS
 from json_utils import json_response
 from preferences import effective_game_category
 from pychess_global_app_state_utils import get_app_state
+from settings import SCHEDULED_TOURNAMENTS_ENABLED
 from typing_defs import ScheduledTournamentCreateData, TournamentCalendarEvent
 
 from tournament.scheduler import new_scheduled_tournaments
@@ -65,7 +66,9 @@ async def tournament_calendar(request: web.Request) -> web.Response:
     app_state = get_app_state(request.app)
 
     events: list[EventData]
-    if app_state.tourney_calendar is not None:
+    if not SCHEDULED_TOURNAMENTS_ENABLED:
+        events = []
+    elif app_state.tourney_calendar is not None:
         events = app_state.tourney_calendar
     else:
         scheduled_tournaments = await get_scheduled_tournaments(get_app_state(request.app))

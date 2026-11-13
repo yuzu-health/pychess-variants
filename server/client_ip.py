@@ -26,10 +26,11 @@ def get_client_ip(request: web.Request) -> str | None:
         return request[_CLIENT_IP_KEY]
 
     client_ip: str | None
-    if CLIENT_IP_MODE == "heroku":
+    forwarded = request.headers.getall("X-Forwarded-For", [])
+    if CLIENT_IP_MODE == "heroku" or (CLIENT_IP_MODE == "alb" and forwarded):
         # Preserve repeated fields in wire order. Heroku appends the connecting
         # address on the right; everything before it can be attacker supplied.
-        forwarded_for = ",".join(request.headers.getall("X-Forwarded-For", []))
+        forwarded_for = ",".join(forwarded)
         candidate = forwarded_for.rsplit(",", maxsplit=1)[-1]
         try:
             client_ip = _canonical_ip(candidate)
@@ -37,6 +38,8 @@ def get_client_ip(request: web.Request) -> str | None:
             # Never search an untrusted prefix for an alternative address.
             raise web.HTTPBadRequest(text="Invalid forwarded client address") from exc
     else:
+        # "direct", or an ALB health check: the load balancer is the only peer that
+        # can reach the task, and it always adds X-Forwarded-For to client requests.
         try:
             client_ip = _canonical_ip(request.remote or "")
         except ValueError:

@@ -55,6 +55,25 @@ class ClientIPTestCase(unittest.TestCase):
         with self.assertRaises(web.HTTPBadRequest):
             get_client_ip(request)
 
+    @patch("client_ip.CLIENT_IP_MODE", "alb")
+    def test_alb_mode_falls_back_to_peer_only_without_header(self):
+        request = make_mocked_request(
+            "GET", "/", headers={"X-Forwarded-For": "203.0.113.10, 198.51.100.44"}
+        ).clone(remote="10.0.0.5")
+        self.assertEqual(get_client_ip(request), "198.51.100.44")
+
+        # Load balancer health checks carry no X-Forwarded-For header.
+        request = make_mocked_request("GET", "/about").clone(remote="10.0.0.5")
+        self.assertEqual(get_client_ip(request), "10.0.0.5")
+
+        for value in ("", "203.0.113.10, not-an-ip"):
+            with self.subTest(value=value):
+                request = make_mocked_request("GET", "/", headers={"X-Forwarded-For": value}).clone(
+                    remote="10.0.0.5"
+                )
+                with self.assertRaises(web.HTTPBadRequest):
+                    get_client_ip(request)
+
     @patch("client_ip.CLIENT_IP_MODE", "heroku")
     def test_canonicalizes_ipv4_and_ipv6(self):
         for candidate, expected in (

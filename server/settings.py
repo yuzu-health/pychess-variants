@@ -17,8 +17,10 @@ DEV = not PROD
 # Heroku isolates web dynos behind its router. Elsewhere, ignore proxy headers
 # unless the operator explicitly configures that same routing boundary.
 CLIENT_IP_MODE = os.getenv("CLIENT_IP_MODE", "heroku" if os.getenv("DYNO") else "direct")
-if CLIENT_IP_MODE not in {"direct", "heroku"}:
-    raise ValueError("CLIENT_IP_MODE must be 'direct' or 'heroku'")
+# "alb": behind an AWS load balancer, which appends the client address to
+# X-Forwarded-For like Heroku but sends its own health checks without the header.
+if CLIENT_IP_MODE not in {"direct", "heroku", "alb"}:
+    raise ValueError("CLIENT_IP_MODE must be 'direct', 'heroku' or 'alb'")
 
 # Per-process admission budgets for anonymous public browsing, independent of
 # addresses, user agents, and query strings. Live game/stream routes are exempt.

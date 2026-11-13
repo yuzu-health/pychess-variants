@@ -537,6 +537,7 @@ async def erase_account(app_state: Any, user: Any) -> None:
             },
         ],
     )
+    await app_state.db.user_password.delete_one({"_id": user.username})
     # Disable the shared live User before any potentially long GDPR discovery and
     # cleanup. Existing websocket handlers observe this immediately, and new
     # websocket handshakes are rejected by process_ws while authored data is erased.

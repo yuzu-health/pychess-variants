@@ -336,7 +336,7 @@ class RequestLobbyTestCase(AioHTTPTestCase):
         resp = await self.client.request("GET", "/")
         self.assertEqual(resp.status, 200)
         text = await resp.text()
-        self.assertIn("<title>PyChess", text)
+        self.assertIn("<title>YuzuChess", text)
 
     async def test_static_pages_do_not_embed_catalogued_variant_registry(self):
         for path in ("/about", "/blogs", "/forum"):

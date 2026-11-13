@@ -105,7 +105,7 @@ async def lobby(request: web.Request) -> ViewContext:
         if user.anon and context["profile_title"] != "BOT" and profileId != "any#":
             raise web.HTTPNotFound()
 
-    context["title"] = "PyChess • Free Online Chess Variants"
+    context["title"] = "YuzuChess"
     context["tournamentdirector"] = is_tournament_director(user, app_state)
 
     puzzle = await get_daily_puzzle(request)

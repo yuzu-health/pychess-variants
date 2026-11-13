@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import os
 import string
+from urllib.parse import quote, urlsplit, urlunsplit
 
 import msgspec
 
@@ -35,7 +37,20 @@ LICHESS_API_TOKEN = os.getenv("LICHESS_API_TOKEN")
 
 # secret_key for session encryption
 # key must be 32 url-safe base64-encoded bytes
-FERNET_KEY = os.getenv("FERNET_KEY", string.ascii_letters[:42] + "_=")
+# SESSION_SECRET (any random string) derives the key, for platforms that cannot store
+# the exact base64 format. The built-in default is public, so PROD refuses it.
+_SESSION_SECRET = os.getenv("SESSION_SECRET")
+_DEFAULT_FERNET_KEY = string.ascii_letters[:42] + "_="
+if os.getenv("FERNET_KEY"):
+    FERNET_KEY = os.environ["FERNET_KEY"]
+elif _SESSION_SECRET:
+    FERNET_KEY = base64.urlsafe_b64encode(
+        hashlib.sha256(_SESSION_SECRET.encode("utf-8")).digest()
+    ).decode("ascii")
+else:
+    FERNET_KEY = _DEFAULT_FERNET_KEY
+if PROD and FERNET_KEY == _DEFAULT_FERNET_KEY:
+    raise ValueError("Set FERNET_KEY or SESSION_SECRET in production")
 SECRET_KEY = base64.urlsafe_b64decode(FERNET_KEY)
 # Absolute registered-login lifetime: one year. Retain the transport cookie
 # slightly longer so a player can reconnect during gameplay-only expiry grace.
@@ -43,7 +58,21 @@ MAX_AGE = 3600 * 24 * 365
 SESSION_GAMEPLAY_GRACE = 3600 * 24
 SESSION_COOKIE_MAX_AGE = MAX_AGE + SESSION_GAMEPLAY_GRACE
 
+# Username/password accounts. New accounts require the shared registration secret.
+REGISTRATION_SECRET = os.getenv("REGISTRATION_SECRET", "stayhealthy")
+# Third-party OAuth sign-in (Lichess/Lishogi/Google/Discord) bypasses the registration
+# secret, so it stays off unless explicitly enabled.
+OAUTH_LOGIN_ENABLED = os.getenv("OAUTH_LOGIN_ENABLED") == "true"
+
 MONGO_HOST = os.getenv("MONGO_HOST", "mongodb://127.0.0.1:27017")
+# Credentials injected as separate secrets (e.g. ECS) are added to the host URI.
+if os.getenv("MONGO_PASSWORD"):
+    _mongo = urlsplit(MONGO_HOST)
+    _auth = "%s:%s@" % (
+        quote(os.getenv("MONGO_USER", "admin"), safe=""),
+        quote(os.environ["MONGO_PASSWORD"], safe=""),
+    )
+    MONGO_HOST = urlunsplit(_mongo._replace(netloc=_auth + _mongo.netloc.rsplit("@", 1)[-1]))
 MONGO_DB_NAME = "pychess-variants"
 
 BOT_TOKENS = msgspec.json.decode(os.getenv("BOT_TOKENS", "{}"))

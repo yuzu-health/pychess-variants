@@ -71,7 +71,7 @@ async def variants(request: web.Request) -> ViewContext:
         context["community_next_href"] = _community_page_href(
             request, community_variants["next_page"]
         )
-        context["title"] = "Community variants • PyChess"
+        context["title"] = "Community variants • YuzuChess"
         return context
 
     if catalogued_doc is not None:
@@ -82,7 +82,7 @@ async def variants(request: web.Request) -> ViewContext:
             add_catalogued_client_docs_context(app_state, user, context, [catalogued_client_doc])
 
         context["catalogued_variant"] = catalogued_variant_rule_context(catalogued_doc)
-        context["title"] = f"{context['catalogued_variant']['displayName']} • PyChess"
+        context["title"] = f"{context['catalogued_variant']['displayName']} • YuzuChess"
         return context
 
     locale = get_locale_ext(context)

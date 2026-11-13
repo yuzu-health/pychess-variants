@@ -139,6 +139,7 @@ COLLECTIONS = (
     CollectionSpec("ublog_post"),
     CollectionSpec("ublog_post2"),
     CollectionSpec("user"),
+    CollectionSpec("user_password"),
     CollectionSpec("user_report"),
     CollectionSpec("video"),
 )

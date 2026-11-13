@@ -30,7 +30,7 @@ from session_security import (
     authenticate_session,
     revoke_user_sessions,
 )
-from settings import URI
+from settings import OAUTH_LOGIN_ENABLED, URI
 from typedefs import REQUEST_NEW_SESSION_KEY
 from typing_defs import UserDocument
 from user_stats import DEFAULT_USER_COUNT
@@ -106,6 +106,8 @@ def oauth_authorization_redirect(session: aiohttp_session.Session, provider: str
 
 async def oauth(request: web.Request) -> web.StreamResponse:
     """Get oauth token with PKCE"""
+    if not OAUTH_LOGIN_ENABLED:
+        raise web.HTTPNotFound()
 
     provider = request.match_info.get("provider")
     if TYPE_CHECKING:
@@ -188,6 +190,8 @@ async def login_choice(_request: web.Request) -> web.StreamResponse:
 
 
 async def login(request: web.Request) -> web.StreamResponse:
+    if not OAUTH_LOGIN_ENABLED:
+        raise web.HTTPNotFound()
     session = await aiohttp_session.get_session(request)
 
     provider = request.match_info.get("provider")
@@ -426,6 +430,8 @@ async def check_username_availability(request: web.Request) -> web.StreamRespons
 
 async def confirm_username(request: web.Request) -> web.StreamResponse:
     """Confirm username selection and complete OAuth registration"""
+    if not OAUTH_LOGIN_ENABLED:
+        raise web.HTTPNotFound()
     session = await aiohttp_session.get_session(request)
 
     # Check if user is in the middle of OAuth flow

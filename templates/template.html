@@ -13,7 +13,17 @@
                 </span>
             </button>
             <nav class="topnav" id="site-nav">
-                <a class="nav-link active home" href="/">PyChess{% if dev %}<span>DEV</span>{% endif %}</a>
+                <a class="nav-link active home yuzu-home" href="/" aria-label="YuzuChess">
+                    <svg class="yuzu-logo" aria-hidden="true" viewBox="0 0 383 117" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M367.875 34.0712V57.9743C367.875 65.4519 363.253 70.2847 356.099 70.2847C348.945 70.2847 344.321 65.4519 344.321 57.9743V34.0712H332.035V58.3539C332.035 72.3423 342.155 82.4942 356.096 82.4942C370.037 82.4942 380.157 72.3423 380.157 58.3539V34.0712H367.872H367.875Z" fill="currentColor"/>
+                        <path d="M246.943 34.0712V57.9743C246.943 65.4519 242.322 70.2847 235.168 70.2847C228.014 70.2847 223.39 65.4519 223.39 57.9743V34.0712H211.104V58.3539C211.104 72.3423 221.224 82.4942 235.165 82.4942C249.106 82.4942 259.226 72.3423 259.226 58.3539V34.0712H246.94H246.943Z" fill="currentColor"/>
+                        <path d="M201.083 34.0001H187.807L173.66 53.3461L159.515 34.0001H146.239L167.773 65.0723V81.9516H179.48V65.0723L201.083 34.0001Z" fill="currentColor"/>
+                        <path d="M318.709 44.7508V34.0001H272.472V44.8398H301.154L272.069 71.2008V81.9516H320.32V71.1119H289.627L318.709 44.7508Z" fill="currentColor"/>
+                        <path d="M35.5819 13.5811L50.4308 5.00781L65.2797 13.5811M81.6759 23.047L96.5248 31.6202V48.7668M96.5248 67.6986V84.8452L81.6759 93.4184M65.2797 102.884L50.4308 111.458L35.5819 102.884M19.1858 93.4184L4.33691 84.8452V67.6986M4.33691 48.7668V31.6202L19.1858 23.047" stroke="currentColor" stroke-width="8.67414"/>
+                        <path d="M50.4311 58.2327V73.3621M50.4311 58.2327L63.5331 50.6681M50.4311 58.2327L37.3291 50.6681" stroke="currentColor" stroke-width="8.67414"/>
+                    </svg>
+                    <span class="yuzu-product">Chess</span>{% if dev %}<span>DEV</span>{% endif %}
+                </a>
                 <section>
                     <button type="button" class="nav-link nav-section" aria-expanded="false" aria-controls="nav-play">{% trans %}Play{% endtrans %}</button>
                     <div class="drp" id="nav-play">
@@ -97,6 +107,14 @@
                     <span class="dropdown-arrow">▼</span>
                 </button>
                 <div class="login-dropdown-menu" role="menu">
+                    {% if not oauth_login_enabled %}
+                    <a class="login-option" href="/login" role="menuitem">
+                        <span class="provider-name">{% trans %}Sign in{% endtrans %}</span>
+                    </a>
+                    <a class="login-option" href="/signup" role="menuitem">
+                        <span class="provider-name">{% trans %}Sign up{% endtrans %}</span>
+                    </a>
+                    {% else %}
                     <a class="login-option" href="/login/lichess" role="menuitem">
                         <span class="provider-icon lichess-icon">
                             <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
@@ -133,6 +151,7 @@
                         </span>
                         <span class="provider-name">Discord</span>
                     </a>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}

@@ -25,6 +25,16 @@ class SignupSecurityEvasionTestCase(AioHTTPTestCase):
     async def get_application(self):
         return make_app(db_client=AsyncMongoMockClient(tz_aware=True), simple_cookie_storage=True)
 
+    async def asyncSetUp(self):
+        await super().asyncSetUp()
+        # This fork disables OAuth by default; these tests cover the OAuth signup flow.
+        self.oauth_enabled_patch = patch("login.OAUTH_LOGIN_ENABLED", True)
+        self.oauth_enabled_patch.start()
+
+    async def asyncTearDown(self):
+        self.oauth_enabled_patch.stop()
+        await super().asyncTearDown()
+
     async def tearDownAsync(self):
         await self.client.close()
 

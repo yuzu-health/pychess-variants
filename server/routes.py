@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable
 from typing import TypeAlias
 
+import password_auth
 from account_api import (
     account_bot_token_create,
     account_bot_token_revoke,
@@ -124,7 +125,6 @@ from login import (
     check_username_availability,
     confirm_username,
     login,
-    login_choice,
     logout,
     oauth,
     select_username,
@@ -261,7 +261,8 @@ RouteDef: TypeAlias = tuple[str, Handler]
 get_routes: tuple[RouteDef, ...] = (
     ("/account/engines", account_view.account_engines),
     ("/api/external-engine", list_engines),
-    ("/login", login_choice),
+    ("/login", password_auth.login_page),
+    ("/signup", password_auth.signup_page),
     ("/login/{provider}", login),
     ("/oauth/{provider}", oauth),
     ("/account", account_view.account_home),
@@ -495,6 +496,8 @@ get_routes: tuple[RouteDef, ...] = (
 )
 
 post_routes: tuple[RouteDef, ...] = (
+    ("/login", password_auth.login_post),
+    ("/signup", password_auth.signup_post),
     ("/account/engines/token/create", account_engine_token_create),
     (r"/account/engines/token/{tokenId:\w{8}}/revoke", account_engine_token_revoke),
     ("/api/external-engine", register_engine),

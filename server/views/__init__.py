@@ -45,7 +45,7 @@ from pymongo.errors import (
     ServerSelectionTimeoutError,
     WaitQueueTimeoutError,
 )
-from settings import ADMINS, SIMULING
+from settings import ADMINS, OAUTH_LOGIN_ENABLED, SIMULING
 from typing_defs import UserDocument, ViewContext
 from user import User, mint_guest_user
 from utils import corr_games, load_game_from_doc
@@ -229,12 +229,13 @@ async def get_user_context(
         "corr_browser_enabled": user.corr_browser_enabled,
         "rr_push_enabled": user.rr_push_enabled,
         "menu_variant": menu_variant,
-        "title": "%s • PyChess" % view.capitalize(),
+        "title": "%s • YuzuChess" % view.capitalize(),
         "view": view,
         "view_css": ("round" if view == "tv" else view) + ".css",
         "anon": user.anon,
         "username": user.username,
         "csrf_token": csrf_token,
+        "oauth_login_enabled": OAUTH_LOGIN_ENABLED,
         "piece_sets": piece_sets,
         "simuling": SIMULING,
         "admin": _is_admin_username(user.username),

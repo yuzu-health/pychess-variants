@@ -59,8 +59,12 @@ class LoginRouteTestCase(AioHTTPTestCase):
             oauth_config["discord"], {"client_secret": self.client_secret}
         )
         self.oauth_config_patch.start()
+        # This fork disables OAuth by default; these tests cover the upstream OAuth flow.
+        self.oauth_enabled_patch = patch("login.OAUTH_LOGIN_ENABLED", True)
+        self.oauth_enabled_patch.start()
 
     async def asyncTearDown(self):
+        self.oauth_enabled_patch.stop()
         self.oauth_config_patch.stop()
         await super().asyncTearDown()
 
@@ -89,11 +93,11 @@ class LoginRouteTestCase(AioHTTPTestCase):
         query = urlencode({"state": state, "code": code})
         return await self.client.get(f"/oauth/discord?{query}", allow_redirects=False)
 
-    async def test_provider_neutral_login_opens_provider_chooser(self):
+    async def test_login_page_renders_password_form(self):
         response = await self.client.get("/login", allow_redirects=False)
 
-        self.assertEqual(response.status, 302)
-        self.assertEqual(response.headers.get("Location"), "/#login")
+        self.assertEqual(response.status, 200)
+        self.assertIn('action="/login"', await response.text())
 
     async def test_pending_registration_rejects_untrusted_and_unprotected_posts(self):
         app_state = get_app_state(self.app)

@@ -1,0 +1,93 @@
+/* Yuzu branding. Loaded last so these variables override site.css. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("InterVariable.woff2") format("woff2");
+}
+
+:root {
+  --yuzu-accent: #ff3d00;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Arial,
+    sans-serif;
+
+  /* Neutral grays instead of pychess's warm beige. */
+  --font-color: #262626;
+  --link-color: #525252;
+  --link-hover: var(--yuzu-accent);
+  --blue-hover: var(--yuzu-accent);
+  --bg-body: #fafafa;
+  --bg-color0: #ffffff;
+  --bg-color1: #ffffff;
+  --bg-color2: #f5f5f5;
+  --bg-meta: #f5f5f5;
+  --bg-box: #f5f5f5;
+  --bg-input: #ffffff;
+  --box-header: #f5f5f5;
+  --border-color: #e5e5e5;
+  --input-border: #d4d4d4;
+  --game-hover: #fff0eb;
+  --blue-active: #ffe4db;
+  --blue-passive: #f0f0f0;
+  --post-hover: #fff0eb;
+  --rematch-hover: var(--yuzu-accent);
+  --link-color-blue: #c2410c;
+  --ct-current: var(--yuzu-accent);
+  --chat-entry-bg: #ffffff;
+  --button-new-game: #ffffff;
+  --button-new-game-hover: #f5f5f5;
+}
+
+[data-theme="dark"] {
+  --font-color: #e5e5e5;
+  --link-color: #a3a3a3;
+  --link-hover: var(--yuzu-accent);
+  --blue-hover: var(--yuzu-accent);
+  --bg-body: #0a0a0a;
+  --bg-color0: #171717;
+  --bg-color1: #171717;
+  --bg-color2: #262626;
+  --bg-seek: rgba(23, 23, 23, 0.85);
+  --bg-meta: #262626;
+  --bg-box: #262626;
+  --bg-input: #171717;
+  --box-header: #262626;
+  --drop-down: #262626;
+  --modal-bg: #171717;
+  --border-color: #333333;
+  --input-border: #404040;
+  --game-hover: #3a1d12;
+  --blue-active: #4a2213;
+  --blue-passive: #262626;
+  --post-hover: #3a1d12;
+  --rematch-hover: var(--yuzu-accent);
+  --link-color-blue: #ff7a4d;
+  --chat-entry-bg: #171717;
+  --chat-entry-border-top: #333333;
+  --vpanel-button: #262626;
+  --vpanel-button-hover: #333333;
+  --btn-controls: #262626;
+  --button-new-game: #262626;
+  --button-new-game-hover: #333333;
+  --rematch: #262626;
+}
+
+/* Header: Yuzu logo plus "Chess". */
+.nav-link.home.yuzu-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.yuzu-home .yuzu-logo {
+  height: 1.1em;
+  width: auto;
+}
+.yuzu-home .yuzu-product {
+  font-weight: 500;
+}
+.nav-link.active.home.yuzu-home:hover {
+  color: var(--yuzu-accent);
+}
